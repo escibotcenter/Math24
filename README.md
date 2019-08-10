@@ -1,6 +1,6 @@
 # Math24
 
-Math 24 is a Python script for answer math 24 game
+Math 24 is a Python script for solve math 24 game
 
 ## Usage
 
