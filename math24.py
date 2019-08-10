@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import random
 import time
 
@@ -15,7 +18,7 @@ class Math24(object):
                 execute = "((%s %s %s) %s %s) %s %s" % (value.pop(value.index(random.choice(value))), math_algorithm[0], value.pop(value.index(random.choice(value))), math_algorithm[1], value.pop(value.index(random.choice(value))), math_algorithm[2], value.pop(value.index(random.choice(value))))
                 result = eval(execute)
                 if debug == True:
-                    print(result, execute)
+                    print(execute, result)
                 if result == 24:
                     return execute
             except ZeroDivisionError:
@@ -29,7 +32,7 @@ class Math24(object):
                     execute = "(%s %s %s) %s (%s %s %s)" % (value.pop(value.index(random.choice(value))), math_algorithm[0], value.pop(value.index(random.choice(value))), _cen, value.pop(value.index(random.choice(value))), math_algorithm[1], value.pop(value.index(random.choice(value))))
                     result = eval(execute)
                     if debug == True:
-                        print(result, execute)
+                        print(execute, result)
                     if result == 24:
                         return execute
                 except ZeroDivisionError:
