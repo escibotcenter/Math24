@@ -18,7 +18,7 @@ value_3_math_algorithm = [
 ]
 
 class Math24(object):
-    def __init__(self, _input, timeout=5, debug=False, *option, **options):
+    def __init__(self, _input, timeout=1, debug=False, *option, **options):
         assert False if not isinstance(_input, list) else len(_input) == 4, 'Invaild argument, simple %s([4, 5, 6, 7])' % (self.__class__.__name__)
     
         def value_3(_value):
@@ -60,10 +60,8 @@ class Math24(object):
     def __repr__(self):
         return str(self.result)
 
-if __name__ == "__main__":
-    while True:
-        #print(Math24([int(i) for i in input("Input: ").split(" ")]))
-        _input = [int(i) for i in input("Input: ").split(" ")]
+class Math24Solutions(object):
+    def __init__(self, _input, timeout=1, debug=False, *option, **options):
         result = []
         timeout = time.time() + 1
         while True: 
@@ -73,4 +71,12 @@ if __name__ == "__main__":
             if res != "Timeout":
                 if res not in result:
                     result.append(res)
-        print("\n".join(result), "\n%s" % (len(result)))
+        self.result = result
+                 
+    def __repr__(self):
+        return str(self.result)
+
+if __name__ == "__main__":
+    while True:
+        #print(Math24([int(i) for i in input("Input: ").split(" ")]))
+        print("\n".join(Math24Solutions([int(i) for i in input("Input: ").split(" ")]).result))
