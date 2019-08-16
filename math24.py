@@ -4,78 +4,55 @@
 import random
 import time
 
-value_2_math_execute = [['+', '-'], ['-', '+'], ['+', '*'], ['*', '+'], ['+', '/'], ['/', '+'], ['-', '-'], ['-', '-'], ['-', '*'], ['*', '-'], ['-', '/'], ['/', '-'], ['*', '-'], ['-', '*'], ['*', '*'], ['*', '*'], ['*', '/'], ['/', '*'], ['/', '-'], ['-', '/'], ['/', '*'], ['*', '/'], ['/', '/'], ['/', '/']]
-value_3_math_execute = [['+', '+', '+'], ['+', '+', '+'], ['+', '+', '-'], ['-', '+', '+'], ['+', '+', '*'], ['*', '+', '+'], ['+', '+', '/'], ['/', '+', '+'], ['+', '-', '+'], ['+', '-', '+'], ['+', '-', '-'], ['-', '-', '+'], ['+', '-', '*'], ['*', '-', '+'], ['+', '-', '/'], ['/', '-', '+'], ['+', '*', '+'], ['+', '*', '+'], ['+', '*', '-'], ['-', '*', '+'], ['+', '*', '*'], ['*', '*', '+'], ['+', '*', '/'], ['/', '*', '+'], ['+', '/', '+'], ['+', '/', '+'], ['+', '/', '-'], ['-', '/', '+'], ['+', '/', '*'], ['*', '/', '+'], ['+', '/', '/'], ['/', '/', '+'], ['-', '+', '-'], ['-', '+', '-'], ['-', '+', '-'], ['-', '+', '-'], ['-', '+', '*'], ['*', '+', '-'], ['-', '+', '/'], ['/', '+', '-'], ['-', '-', '-'], ['-', '-', '-'], ['-', '-', '-'], ['-', '-', '-'], ['-', '-', '*'], ['*', '-', '-'], ['-', '-', '/'], ['/', '-', '-'], ['-', '*', '-'], ['-', '*', '-'], ['-', '*', '-'], ['-', '*', '-'], ['-', '*', '*'], ['*', '*', '-'], ['-', '*', '/'], ['/', '*', '-'], ['-', '/', '-'], ['-', '/', '-'], ['-', '/', '-'], ['-', '/', '-'], ['-', '/', '*'], ['*', '/', '-'], ['-', '/', '/'], ['/', '/', '-'], ['*', '+', '*'], ['*', '+', '*'], ['*', '+', '-'], ['-', '+', '*'], ['*', '+', '*'], ['*', '+', '*'], ['*', '+', '/'], ['/', '+', '*'], ['*', '-', '*'], ['*', '-', '*'], ['*', '-', '-'], ['-', '-', '*'], ['*', '-', '*'], ['*', '-', '*'], ['*', '-', '/'], ['/', '-', '*'], ['*', '*', '*'], ['*', '*', '*'], ['*', '*', '-'], ['-', '*', '*'], ['*', '*', '*'], ['*', '*', '*'], ['*', '*', '/'], ['/', '*', '*'], ['*', '/', '*'], ['*', '/', '*'], ['*', '/', '-'], ['-', '/', '*'], ['*', '/', '*'], ['*', '/', '*'], ['*', '/', '/'], ['/', '/', '*'], ['/', '+', '/'], ['/', '+', '/'], ['/', '+', '-'], ['-', '+', '/'], ['/', '+', '*'], ['*', '+', '/'], ['/', '+', '/'], ['/', '+', '/'], ['/', '-', '/'], ['/', '-', '/'], ['/', '-', '-'], ['-', '-', '/'], ['/', '-', '*'], ['*', '-', '/'], ['/', '-', '/'], ['/', '-', '/'], ['/', '*', '/'], ['/', '*', '/'], ['/', '*', '-'], ['-', '*', '/'], ['/', '*', '*'], ['*', '*', '/'], ['/', '*', '/'], ['/', '*', '/'], ['/', '/', '/'], ['/', '/', '/'], ['/', '/', '-'], ['-', '/', '/'], ['/', '/', '*'], ['*', '/', '/'], ['/', '/', '/'], ['/', '/', '/']]
+math_algorithm = [
+    "(%s %s %s) %s (%s %s %s)",
+    "((%s %s %s) %s %s) %s %s"
+]
 
-value_2_math_algorithm = [
-    "(%s %s %s) %s (%s %s %s)"
-]
-value_3_math_algorithm = [
-    "(%s %s (%s %s %s)) %s %s",
-    "((%s %s %s) %s %s) %s %s",
-    "%s %s (%s %s %s %s %s)"
-]
+math_execute = ["+", "-", "*", "/"]
+
+class ThinkValue(object):
+    result = None
+
+    def __init__(self, values, max_values=4, max_value=50, timeout=1):
+        if max_values in [0, 1]:
+            self.result = values
+        elif len(str(values)) == max_values and all(i.isdigit() for i in list(str(values))):
+            self.result = list(str(values))
+        timeout = time.time() + 1
+        while time.time() < timeout and self.result == None:
+            v = list(str(values))
+            if all(i.isdigit() for i in v):
+                for i in range(len(v) - max_values):
+                    v[random.randint(0, len(v) - 1)] = v[random.randint(0, len(v) - 1)] + v.pop(random.randint(0, len(v) - 1))
+                if len(v) == max_values:
+                    self.result = v
+            else:
+                break
 
 class Math24(object):
-    def __init__(self, _input, timeout=1, debug=False, *option, **options):
-        assert False if not isinstance(_input, list) else len(_input) == 4, 'Invaild argument, simple %s([4, 5, 6, 7])' % (self.__class__.__name__)
-    
-        def value_3(_value):
-            math_algorithm = random.choice(value_3_math_execute)
-            value = list(_value)
+    result = None
+
+    def __init__(self, values, timeout=1, debug=False):
+        if (len([str(i) for i in values if i != " "]) != 4 if isinstance(values, list) else True):
+            print("Warning : values should be List, simple %s([4, 4, 4, 4])" % (self.__class__.__name__))
+            dim_values = ThinkValue("".join([str(i) for i in values if i != " "]) if isinstance(values, list) else values, 4, 4)
+            print("%s : returned %s" % (dim_values.__class__.__name__, dim_values.result))
+            values = dim_values.result
+        timeout = time.time() + timeout
+        while time.time() < timeout and self.result == None:
             try:
-                execute = random.choice(value_3_math_algorithm) % (value.pop(value.index(random.choice(value))), math_algorithm[0], value.pop(value.index(random.choice(value))), math_algorithm[1], value.pop(value.index(random.choice(value))), math_algorithm[2], value.pop(value.index(random.choice(value))))
-                result = eval(execute)
-                if debug == True:
-                    print(execute, result)
-                if result == 24:
-                    return execute
-            except ZeroDivisionError:
+                value = list(values)
+                execute = random.choice(math_algorithm) % (value.pop(value.index(random.choice(value))), random.choice(math_execute), value.pop(value.index(random.choice(value))), random.choice(math_execute), value.pop(value.index(random.choice(value))), random.choice(math_execute), value.pop(value.index(random.choice(value))))
+                if eval(execute) == 24:
+                    self.result = execute
+            except (ZeroDivisionError, TypeError, SyntaxError, NameError, IndexError):
                 pass
 
-        def value_2(_value):
-            math_algorithm = random.choice(value_2_math_execute)
-            for _cen in random.choice(value_2_math_execute):
-                value = list(_value)
-                try:
-                    execute = random.choice(value_2_math_algorithm) % (value.pop(value.index(random.choice(value))), math_algorithm[0], value.pop(value.index(random.choice(value))), _cen, value.pop(value.index(random.choice(value))), math_algorithm[1], value.pop(value.index(random.choice(value))))
-                    result = eval(execute)
-                    if debug == True:
-                        print(execute, result)
-                    if result == 24:
-                        return execute
-                except ZeroDivisionError:
-                    pass
-
-        timeout = time.time() + timeout
-        while getattr(self, 'result', None) == None:
-            if time.time() > timeout:
-                self.result = "Timeout"
-            if getattr(self, 'result', None) == None:
-                self.result = value_2(list(_input))
-            if getattr(self, 'result', None) == None:
-                self.result = value_3(list(_input))
-    
-    def __repr__(self):
-        return str(self.result)
-
-class Math24Solutions(object):
-    def __init__(self, _input, timeout=1, debug=False, *option, **options):
-        result = []
-        timeout = time.time() + 1
-        while True: 
-            if time.time() > timeout:
-                break
-            res = Math24(_input).result
-            if res != "Timeout":
-                if res not in result:
-                    result.append(res)
-        self.result = result
-                 
     def __repr__(self):
         return str(self.result)
 
 if __name__ == "__main__":
     while True:
-        #print(Math24([int(i) for i in input("Input: ").split(" ")]))
-        print("\n".join(Math24Solutions([int(i) for i in input("Input: ").split(" ")]).result))
+        _input = input("Input: ")
+        print("Solution: %s\n" % (Math24(list(_input) if " " in _input else None if not _input.isdigit() else int(_input)).result))
